@@ -16,6 +16,8 @@ from gensim.models import Word2Vec
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from gensim.parsing.preprocessing import remove_stopwords, strip_punctuation, strip_numeric
 
+from tqdm.notebook import tqdm
+
 class FeatureEmbeddings:
     def __init__(self):
         self.features = pd.DataFrame()
@@ -104,7 +106,10 @@ class FeatureEmbeddings:
         for i in range(0,100):
             a_vec_labels.append('a_vec_'+str(i))
         vecs = []
-        for text in articles:
+        loop = tqdm(total=len(articles), position=0) # the little progress bar thing
+        for i, text in enumerate(articles):
+            loop.set_description('Inferring vector for article number: '+str(i))
+            loop.update(1)
             t = text.split()
             e = list(doc_model.infer_vector(t))
             vecs.append(e)
